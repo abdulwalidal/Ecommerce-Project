@@ -1,6 +1,8 @@
 package com.ecommerce.project.Service;
 
 import com.ecommerce.project.Model.Category;
+import com.ecommerce.project.Repository.CategoryRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -12,46 +14,39 @@ import java.util.Optional;
 @Service
 public class CategoryServiceImpl implements CategoryService {
 
-    private List<Category> categories = new ArrayList<>();
-    private Long nextID = 1L;
+    @Autowired
+    private CategoryRepository categoryRepository;
+
 
     @Override
     public List<Category> getAllCategories() {
-        return categories;
+        return categoryRepository.findAll();
     }
 
     @Override
     public void createCategory(Category category) {
-        category.setCategoryId(nextID++);
-        categories.add(category);
+      //  category.setCategoryId(nextID++);
+       categoryRepository.save(category);
 
     }
     @Override
     public String deleteCategory(Long categoryId) {
-        // Step 1 & 2: Search for the category using a Stream
-        Category category = categories.stream()
-                .filter(c -> c.getCategoryId().equals(categoryId))
-                .findFirst()
+        Optional<Category> savedCategoryOptional  = categoryRepository.findById(categoryId);
+        Category savedCategory = savedCategoryOptional
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Resource not found"));
-        // Step 3: Remove from the list and return result
-        categories.remove(category);
-        return "Category with categoryId :" + categoryId + "deleted successfully !! ";
+
+       categoryRepository.delete(savedCategory);
+       return "Your category is deleted successfully";
     }
 
     @Override
     public Category updateCategory(Category category, Long categoryId) {
-        Optional<Category> optionalCategory = categories.stream()
-                .filter(c -> c.getCategoryId().equals(categoryId))
-                .findFirst();
-
-        if(optionalCategory.isPresent()) {
-            Category existingCategory = optionalCategory.get(); // give me the actual value inside the Optional
-            existingCategory.setCategoryName(category.getCategoryName());
-            return existingCategory;
-        } else {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, ("Resource not found"));
-
-        }
+      Optional<Category> savedCategoryOptional  = categoryRepository.findById(categoryId);
+      Category savedCategory = savedCategoryOptional
+              .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Resource not found"));
+      category.setCategoryId(categoryId);
+      savedCategory = categoryRepository.save(category);
+      return savedCategory;
     }
 
 }
