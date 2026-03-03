@@ -13,15 +13,15 @@ import java.util.List;
 @RequestMapping("/category")
 public class CategoryController {
 
-    private CategoryService categoryService;
+    private final CategoryService categoryService;
 
     public CategoryController(CategoryService categoryService) {
         this.categoryService = categoryService;
     }
 
     @GetMapping
-    public ResponseEntity<List<Category>> getAllCategories() {
-        List<Category> allCategories = categoryService.getAllCategories();
+    public ResponseEntity<List<Category>> getAllCategories(Category category) {
+        List<Category> allCategories = categoryService.findAllCategories(category);
         return new ResponseEntity<>(allCategories, HttpStatus.OK);
     }
 
@@ -34,29 +34,19 @@ public class CategoryController {
 
     @DeleteMapping("/{categoryId}")
     public ResponseEntity<String> deleteCategory(@PathVariable Long categoryId) {
-        try {
+
             String status = categoryService.deleteCategory(categoryId);
             return new ResponseEntity<>(status, HttpStatus.OK);
-        } catch (ResponseStatusException e) {
-            return new ResponseEntity<>(e.getReason(), e.getStatusCode());
-        }
     }
 
     @PutMapping("/update/{categoryId}")
-    public ResponseEntity<String> updateCategory(@RequestBody Category category,
+    public ResponseEntity<String> updateCategory(@Valid @RequestBody Category category,
                                                  @PathVariable Long categoryId) {
-        try {
+
             Category savedCategory = categoryService.updateCategory(category, categoryId);
             return new ResponseEntity<>("Category is updated", HttpStatus.OK);
 
-        }
-            catch(ResponseStatusException e) {
-                return new ResponseEntity<>(e.getReason(), e.getStatusCode());
-
-            }
-
     }
-
 
 }
 
