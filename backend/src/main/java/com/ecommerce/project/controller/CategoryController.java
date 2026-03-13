@@ -19,14 +19,24 @@ public class CategoryController {
     @Autowired
     private final CategoryService categoryService;
 
+
     public CategoryController(CategoryService categoryService) {
         this.categoryService = categoryService;
     }
 
 
+    @GetMapping("/echo")
+    public ResponseEntity<String> echoMessage (@RequestParam(name = "message") String message ) {
+       return new ResponseEntity<>("Echoed messaged" + message, HttpStatus.OK);
+    }
+
+
     @GetMapping
-    public ResponseEntity<CategoryResponse> getAllCategories(Category category) {
-       CategoryResponse categoryResponse = categoryService.findAllCategories();
+    public ResponseEntity<CategoryResponse> getAllCategories(
+            @RequestParam (name = "pageNumber") Integer pageNumber,
+            @RequestParam (name = "pageSize") Integer pageSize
+    ) {
+       CategoryResponse categoryResponse = categoryService.findAllCategories(pageNumber, pageSize);
         return new ResponseEntity<>(categoryResponse, HttpStatus.OK);
     }
 
