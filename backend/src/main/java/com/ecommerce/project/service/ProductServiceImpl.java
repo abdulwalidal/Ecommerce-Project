@@ -54,4 +54,29 @@ public class ProductServiceImpl implements ProductService {
         return productResponse;
 
     }
+
+    @Override
+    public ProductResponse searchByCategory(Long categoryId) {
+        Category category = categoryRepository.findById(categoryId)
+                .orElseThrow(()-> new ResourceNotFoundException("category", "categoryId", categoryId));
+
+
+          // This repository method is defined using Spring Data JPA naming conventions.
+         // Spring Data JPA automatically generates and executes the query based on the method name.
+         // SELECT p FROM Product p WHERE p.category = :category ORDER BY p.price ASC
+        List<Product> products = productRepository.findByCategoryOrderByPriceAsc(category);
+
+        List<ProductDTO> productDTOS = products.stream()
+                .map(product -> modelMapper.map(product, ProductDTO.class))
+                .toList();
+        ProductResponse productResponse = new ProductResponse();
+        productResponse.setContent(productDTOS);
+
+        return productResponse;
+
+
+
+
+
+    }
 }
