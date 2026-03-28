@@ -30,4 +30,12 @@ public class ProductController {
         ProductResponse productResponse = productService.getAll();
         return new ResponseEntity<>(productResponse, HttpStatus.OK);
     }
+
+    @GetMapping("public/{categoryId}product")
+// Return ProductResponse (not ProductDTO) because ProductDTO represents a single product,
+// while ProductResponse is used to wrap a list of products.
+    public ResponseEntity<ProductResponse> getProductByCategory(@PathVariable Long categoryId) {
+        ProductResponse productResponse = productService.searchByCategory(categoryId);
+        return new ResponseEntity<>(productResponse, HttpStatus.OK);
+    }
 }
