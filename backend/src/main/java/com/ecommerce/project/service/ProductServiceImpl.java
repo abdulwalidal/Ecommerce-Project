@@ -76,13 +76,11 @@ public class ProductServiceImpl implements ProductService {
 
 
 
-
-
     }
 
     @Override
     public ProductResponse searchByKeyword(String keyword) {
-      List<Product> products = productRepository.findProductNameLikeIgnoreCase('%' + keyword + '%');
+      List<Product> products = productRepository.findByProductNameLikeIgnoreCase('%' + keyword + '%');
 
         List<ProductDTO> productDTOS = products.stream()
                 .map(product -> modelMapper.map(product, ProductDTO.class))
@@ -93,6 +91,20 @@ public class ProductServiceImpl implements ProductService {
         return productResponse;
 
 
+    }
+
+    @Override
+    public ProductDTO updateProduct(Product product, Long productId) {
+        //  Finds the existing product by ID; throws ResourceNotFoundException if it doesn’t exist.
+        Product productFromDb = productRepository.findById(productId)
+                .orElseThrow(() -> new ResourceNotFoundException("Product", "productID", productId));
+
+        productFromDb.setProductName(product.getProductName());
+        productFromDb.setProductDescription(product.getProductDescription());
+
+        Product savedProduct = productRepository.save(productFromDb);
+
+        return modelMapper.map(savedProduct, ProductDTO.class);
 
 
     }

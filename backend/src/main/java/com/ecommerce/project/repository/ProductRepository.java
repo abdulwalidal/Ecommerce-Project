@@ -11,5 +11,5 @@ import java.util.List;
 public interface ProductRepository extends JpaRepository<Product, Long> {
     List<Product> findByCategoryOrderByPriceAsc(Category category);
 
-    List<Product> findProductNameLikeIgnoreCase(String keyword);
+    List<Product> findByProductNameLikeIgnoreCase(String keyword);
 }
