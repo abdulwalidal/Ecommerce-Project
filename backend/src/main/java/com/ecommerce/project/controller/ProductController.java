@@ -50,7 +50,12 @@ public class ProductController {
                                                     @PathVariable Long productId) {
         ProductDTO productDTO = productService.updateProduct(product, productId);
         return new ResponseEntity<>(productDTO, HttpStatus.OK);
+    }
 
+    @DeleteMapping("/admin/{productId}/product")
+    public ResponseEntity<ProductDTO> deleteProduct(@PathVariable Long productId) {
+        ProductDTO productDTO = productService.deleteProduct(productId);
+        return new ResponseEntity<>(productDTO, HttpStatus.OK);
 
     }
 
