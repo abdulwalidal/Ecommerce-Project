@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("product")
@@ -40,7 +41,7 @@ public class ProductController {
     }
 
     @GetMapping("public/{keyword}/products")
-    public ResponseEntity<ProductResponse> getProductByKeyword(String keyword) {
+    public ResponseEntity<ProductResponse> getProductByKeyword(@PathVariable  String keyword) {
         ProductResponse productResponse = productService.searchByKeyword(keyword);
         return new ResponseEntity<>(productResponse, HttpStatus.OK);
     }
@@ -58,6 +59,7 @@ public class ProductController {
         return new ResponseEntity<>(productDTO, HttpStatus.OK);
 
     }
+
 
 
 }
