@@ -101,6 +101,10 @@ public class ProductServiceImpl implements ProductService {
 
         productFromDb.setProductName(product.getProductName());
         productFromDb.setProductDescription(product.getProductDescription());
+        double specialPrice = product.getPrice() -
+                ((product.getDiscount() * 0.01) * product.getPrice());
+        productFromDb.setSpecialPrice(specialPrice);
+
 
         Product savedProduct = productRepository.save(productFromDb);
 
