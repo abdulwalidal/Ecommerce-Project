@@ -1,5 +1,6 @@
 package com.ecommerce.project.service;
 
+import com.ecommerce.project.exceptions.APIException;
 import com.ecommerce.project.exceptions.ResourceNotFoundException;
 import com.ecommerce.project.model.Category;
 import com.ecommerce.project.model.Product;
@@ -30,6 +31,11 @@ public class ProductServiceImpl implements ProductService {
         Category category = categoryRepository.findById(categoryId)
                 .orElseThrow(()-> new ResourceNotFoundException("category", "categoryId", categoryId));
 
+        Product productFromDb = productRepository.findByProductName(product.getProductName());
+        if(productFromDb != null) {
+           throw new APIException("Product with this name " + product.getProductName() + " already exists !!");
+        }
+
         product.setCategory(category);
         product.setImage("default.png");
 
@@ -45,9 +51,15 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public ProductResponse getAll() {
         List<Product> products = productRepository.findAll();
+        if(products.isEmpty()) {
+            throw new APIException("No product is created till now");
+        }
         List<ProductDTO> productDTOS = products.stream()
                 .map(product -> modelMapper.map(product, ProductDTO.class))
                 .toList();
+
+
+
         ProductResponse productResponse = new ProductResponse();
         productResponse.setContent(productDTOS);
 
@@ -60,11 +72,14 @@ public class ProductServiceImpl implements ProductService {
         Category category = categoryRepository.findById(categoryId)
                 .orElseThrow(()-> new ResourceNotFoundException("category", "categoryId", categoryId));
 
-
           // This repository method is defined using Spring Data JPA naming conventions.
          // Spring Data JPA automatically generates and executes the query based on the method name.
          // SELECT p FROM Product p WHERE p.category = :category ORDER BY p.price ASC
         List<Product> products = productRepository.findByCategoryOrderByPriceAsc(category);
+        if(products.isEmpty()) {
+            throw new APIException("No product is created till now");
+        }
+
 
         List<ProductDTO> productDTOS = products.stream()
                 .map(product -> modelMapper.map(product, ProductDTO.class))
@@ -81,6 +96,9 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public ProductResponse searchByKeyword(String keyword) {
       List<Product> products = productRepository.findByProductNameLikeIgnoreCase('%' + keyword + '%');
+        if(products.isEmpty()) {
+            throw new APIException("No product is created till now");
+        }
 
         List<ProductDTO> productDTOS = products.stream()
                 .map(product -> modelMapper.map(product, ProductDTO.class))
