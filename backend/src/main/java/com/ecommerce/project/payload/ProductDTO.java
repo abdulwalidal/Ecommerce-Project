@@ -18,4 +18,5 @@ public class ProductDTO {
     private double price;
     private double specialPrice;
     private double discount;
+    private String productDescription;
 }
