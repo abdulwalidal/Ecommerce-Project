@@ -110,7 +110,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public ProductResponse searchByKeyword(String keyword) {
+    public ProductResponse searchByKeyword(String s, Integer pageNumber, Integer pageSize, String sortBy, String keyword) {
       List<Product> products = productRepository.findByProductNameLikeIgnoreCase('%' + keyword + '%');
         if(products.isEmpty()) {
             throw new APIException("No product is created till now");
