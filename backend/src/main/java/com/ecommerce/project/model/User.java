@@ -5,10 +5,7 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -17,7 +14,6 @@ import java.util.Set;
 
 @Data
 @NoArgsConstructor
-@AllArgsConstructor
 @Entity
 @Table (name = "users",
         uniqueConstraints = {
@@ -25,6 +21,12 @@ import java.util.Set;
         @UniqueConstraint(columnNames = "email")
         })
 public class User {
+
+    public User(String userName, String email, String password) {
+        this.userName = userName;
+        this.email = email;
+        this.password = password;
+    }
 
     @Id
     @GeneratedValue (strategy = GenerationType.IDENTITY)

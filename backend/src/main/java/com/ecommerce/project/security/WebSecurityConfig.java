@@ -76,8 +76,12 @@ public class WebSecurityConfig {
                                 .requestMatchers("/swagger-ui/**").permitAll()
                                 .requestMatchers("/api/test/**").permitAll()
                                 .requestMatchers("/images/**").permitAll()
+                                .requestMatchers("/h2-console/**").permitAll() // 1. Allow public access to H2
                                 .anyRequest().authenticated()
                 );
+
+        // 2. CRITICAL FOR H2: Allow frames from the same origin to fix the blank page issue
+        http.headers(headers -> headers.frameOptions(frame -> frame.sameOrigin()));
 
         http.authenticationProvider(authenticationProvider());
 
